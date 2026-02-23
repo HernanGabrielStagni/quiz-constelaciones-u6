@@ -41,8 +41,8 @@
         <div class="logo-container">
           <img src="img/Logo espacio semillas.jpg" alt="Espacio Semillas" />
         </div>
-        <div class="badge" id="quiz-unit-badge">Cargando...</div>
         <h1 id="quiz-course-title">Constelaciones Familiares</h1>
+        <div class="badge" id="quiz-unit-badge">Cargando...</div>
         <p id="quiz-module-subtitle"></p>
       </header>
 
@@ -59,6 +59,9 @@
                   required
                   placeholder="Tu nombre"
                 />
+                <span id="nombre-error" class="error-msg"
+                  >El nombre es obligatorio</span
+                >
               </div>
               <div class="field">
                 <label>Apellido *</label>
@@ -68,14 +71,18 @@
                   required
                   placeholder="Tu apellido"
                 />
+                <span id="apellido-error" class="error-msg"
+                  >El apellido es obligatorio</span
+                >
               </div>
+            </div>
+            <div class="form-grid">
               <div class="field">
-                <label>Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="correo@ejemplo.com (Opcional)"
-                />
+                <label>Email (Opcional)</label>
+                <input type="email" id="email" placeholder="ejemplo@mail.com" />
+                <span id="email-error" class="error-msg"
+                  >Formato de email incorrecto</span
+                >
               </div>
               <div class="field">
                 <label>DNI *</label>
@@ -85,6 +92,9 @@
                   required
                   placeholder="Solo números"
                 />
+                <span id="dni-error" class="error-msg"
+                  >DNI requerido (mín. 7 dígitos)</span
+                >
               </div>
             </div>
             <button
@@ -120,7 +130,11 @@
         </button>
 
         <!-- RESULTADOS PREMIUM (Estilo Stitch) -->
-        <div id="results-area" class="results-screen" style="display: none">
+        <div
+          id="results-area"
+          class="results-screen screen"
+          style="display: none"
+        >
           <div class="results-card">
             <h2 id="result-title">Resultado Parcial</h2>
 
@@ -201,6 +215,36 @@
               style="display: none"
             ></div>
             <div id="sendStatus" class="send-status"></div>
+            <button
+              id="adminAccessBtn"
+              class="admin-access-btn"
+              onclick="handleAdminAccess()"
+            >
+              Acceso a Base de Datos
+            </button>
+
+            <!-- Recuadro para introducir la clave -->
+            <div id="adminLoginBox" class="admin-login-box">
+              <input
+                type="password"
+                id="adminKey"
+                class="admin-input"
+                placeholder="Introduce la clave"
+              />
+              <button class="admin-verify-btn" onclick="verifyAdmin()">
+                Verificar
+              </button>
+              <p
+                style="
+                  font-size: 0.75rem;
+                  color: var(--muted);
+                  margin-top: 10px;
+                "
+              >
+                Indique la clave de administrador para acceder a la base de
+                datos.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -213,14 +257,10 @@
        */
       const QUIZ_CONFIG = {
         courseTitle: "Constelaciones Familiares",
-        quizNumber: "6", // El número que aparece en la etiqueta superior
-        unitName: "Unidad 6",
+        quizNumber: "6",
         moduleSubtitle: "Vínculos entre padres e hijos",
         appsScriptUrl:
           "https://script.google.com/macros/s/AKfycbytfcpvZ0ysrjP7qYFZDt5GO4u4joxMhrTLcv82dPt7vHUPZdCXuqTELH1UJRpP_cUU/exec",
-        // Mapeo de soluciones fácil de editar: "Pregunta:Letra"
-        solutionsMapping:
-          "1:d, 2:b, 3:d, 4:b, 5:d, 6:a, 7:c, 8:b, 9:b, 10:d, 11:b, 12:a, 13:d, 14:d, 15:a",
         questions: [
           {
             q: "¿Qué patrón es dañino para el amor entre los padres y los hijos?",
@@ -230,6 +270,7 @@
               "c) Los padres no le dan a los hijos algo dañino.",
               "d) Los hijos rehúsan aceptar a los padres como son.",
             ],
+            correct: 3,
           },
           {
             q: "¿Qué significa el movimiento interrumpido?",
@@ -239,6 +280,7 @@
               "c) El padre y el hijo se ignoran.",
               "d) El hijo se dirige a su padre para obtener lo que necesita.",
             ],
+            correct: 1,
           },
           {
             q: "Un hijo interrumpe el movimiento hacia sus padres como consecuencia de:",
@@ -248,6 +290,7 @@
               "c) Un matrimonio.",
               "d) Una experiencia traumática y una desconfianza profunda.",
             ],
+            correct: 3,
           },
           {
             q: "¿Cómo se puede reparar el movimiento interrumpido?",
@@ -257,6 +300,7 @@
               "c) El hijo le dice a sus padres: 'Yo sigo mi propio camino'.",
               "d) El hijo le dice a sus padres: 'Yo honro vuestro destino'.",
             ],
+            correct: 1,
           },
           {
             q: "¿Deben estar presentes los niños durante una constelación?",
@@ -266,6 +310,7 @@
               "c) A veces.",
               "d) No y no necesitan saber nada al respecto.",
             ],
+            correct: 3,
           },
           {
             q: "Se trata de parentificación cuando…",
@@ -275,6 +320,7 @@
               "c) Cuando hay un equilibrio entre dar y tomar.",
               "d) Cuando un hijo y sus padres han reñido.",
             ],
+            correct: 1,
           },
           {
             q: "¿Pertenecen las anteriores parejas al destino común?",
@@ -284,6 +330,7 @@
               "c) Sí, porque han dejado un lugar libre para la pareja actual.",
               "d) Solamente cuando no hay hijos comunes y la pareja tiene un nuevo compañero.",
             ],
+            correct: 2,
           },
           {
             q: "¿Cuándo una mujer quiere un hijo sin querer tener pareja, crea una carga para al hijo?",
@@ -293,6 +340,7 @@
               "c) No, ella quiere un hijo, por lo que el hijo viene para la madre.",
               "d) A veces.",
             ],
+            correct: 1,
           },
           {
             q: "¿Qué consecuencias tiene un padre innecesario o difícil para los hijos?",
@@ -302,6 +350,7 @@
               "c) Ninguna exclusión.",
               "d) Movimiento interrumpido.",
             ],
+            correct: 1,
           },
           {
             q: "¿Son los padres compañeros, camaradas o amigos de los hijos?",
@@ -311,6 +360,7 @@
               "c) Amigos sí, compañeros y camaradas no.",
               "d) No.",
             ],
+            correct: 3,
           },
           {
             q: "¿Pueden compartir detalles de su relación los padres con los hijos?",
@@ -320,6 +370,7 @@
               "c) Sólo cuando la relación es amistosa.",
               "d) Sólo cuando los hijos están involucrados con los problemas.",
             ],
+            correct: 1,
           },
           {
             q: "¿A qué se puede deber el mal comportamiento e hiperactividad de los hijos?",
@@ -329,6 +380,7 @@
               "c) A la lealtad de los hijos hacia sus maestros.",
               "d) Ninguna de las opciones.",
             ],
+            correct: 0,
           },
           {
             q: "Los hijos que rehúsan tomar a sus padres como son…",
@@ -338,6 +390,7 @@
               "c) Han dejado de acercarse a los padres debido a una colocación en un hogar de niños.",
               "d) Todas las opciones.",
             ],
+            correct: 3,
           },
           {
             q: "Un hijo toma la vida cuando…",
@@ -347,6 +400,7 @@
               "c) Cuando ve a sus ancestros con buenos ojos.",
               "d) Cuando honra a sus padres.",
             ],
+            correct: 3,
           },
           {
             q: "¿Qué tipo de dinámica surge debido al vínculo?",
@@ -356,27 +410,13 @@
               "c) Parentificación.",
               "d) No surge ninguna dinámica.",
             ],
+            correct: 0,
           },
         ],
       };
 
-      // PROCESADOR DE CONFIGURACIÓN (Lógica automática)
       const bank = QUIZ_CONFIG.questions;
       const APPS_SCRIPT_URL = QUIZ_CONFIG.appsScriptUrl;
-
-      // Traducir el mapeo humano (1:a) a índices de sistema (0, 1, 2...)
-      (function parseSolutions() {
-        const map = {};
-        const pairs = QUIZ_CONFIG.solutionsMapping.split(",");
-        pairs.forEach((p) => {
-          const [qNum, letter] = p.trim().split(":");
-          const index = letter.toLowerCase().charCodeAt(0) - 97; // a->0, b->1, c->2, d->3
-          map[parseInt(qNum)] = index;
-        });
-        bank.forEach((q, i) => {
-          q.correct = map[i + 1];
-        });
-      })();
 
       const feedbackPhrases = {
         high: [
@@ -411,11 +451,11 @@
         const skipVideo = () => {
           // Inicializar títulos dinámicos desde la configuración
           document.getElementById("quiz-unit-badge").textContent =
-            `Quiz Evaluación #${QUIZ_CONFIG.quizNumber}`;
+            `Quiz Unidad ${QUIZ_CONFIG.quizNumber}`;
           document.getElementById("quiz-course-title").textContent =
             QUIZ_CONFIG.courseTitle;
-          document.getElementById("quiz-module-subtitle").innerHTML =
-            `<strong>${QUIZ_CONFIG.unitName}:</strong> ${QUIZ_CONFIG.moduleSubtitle}`;
+          document.getElementById("quiz-module-subtitle").textContent =
+            QUIZ_CONFIG.moduleSubtitle;
 
           overlay.classList.add("hidden");
           sessionStorage.setItem("quizStarted", "true"); // Marcamos que ya pasó la intro
@@ -448,67 +488,121 @@
             // En cualquier otro caso (visita nueva o refresco antes de empezar), mostramos intro
             overlay.classList.remove("hidden");
             video.onended = skipVideo;
-            video.onerror = skipVideo;
           }
         } catch (e) {
           skipVideo();
         }
+
+        // VALIDACIÓN DE FORMULARIO EN TIEMPO REAL
+        const studentForm = document.getElementById("studentForm");
+        const startBtn = document.getElementById("startQuizBtn");
+        const registrationInputs = ["nombre", "apellido", "dni"];
+
+        const validateForm = (e) => {
+          const nombreInput = document.getElementById("nombre");
+          const apellidoInput = document.getElementById("apellido");
+          const dniInput = document.getElementById("dni");
+          const emailInput = document.getElementById("email");
+
+          const nombreVal = nombreInput.value.trim();
+          const apellidoVal = apellidoInput.value.trim();
+          const dniVal = dniInput.value.trim();
+          const emailVal = emailInput.value.trim();
+
+          // Feedback de Nombre
+          const nombreErr = document.getElementById("nombre-error");
+          if (nombreVal === "") {
+            nombreErr.classList.add("visible");
+            nombreInput.classList.add("input-error");
+          } else {
+            nombreErr.classList.remove("visible");
+            nombreInput.classList.remove("input-error");
+          }
+
+          // Feedback de Apellido
+          const apellidoErr = document.getElementById("apellido-error");
+          if (apellidoVal === "") {
+            apellidoErr.classList.add("visible");
+            apellidoInput.classList.add("input-error");
+          } else {
+            apellidoErr.classList.remove("visible");
+            apellidoInput.classList.remove("input-error");
+          }
+
+          // Feedback de DNI
+          const dniErr = document.getElementById("dni-error");
+          if (dniVal === "" || dniVal.length < 7) {
+            dniErr.classList.add("visible");
+            dniInput.classList.add("input-error");
+          } else {
+            dniErr.classList.remove("visible");
+            dniInput.classList.remove("input-error");
+          }
+
+          // Feedback de Email
+          const emailErr = document.getElementById("email-error");
+          if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+            emailErr.classList.add("visible");
+            emailInput.classList.add("input-error");
+          } else {
+            emailErr.classList.remove("visible");
+            emailInput.classList.remove("input-error");
+          }
+
+          const isValid =
+            nombreVal !== "" &&
+            apellidoVal !== "" &&
+            dniVal.length >= 7 &&
+            (!emailVal || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal));
+          if (startBtn) startBtn.disabled = !isValid;
+        };
+
+        registrationInputs.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener("input", validateForm);
+        });
+
+        // Agregar campo email a los oyentes por si acaso
+        document
+          .getElementById("email")
+          .addEventListener("input", validateForm);
+        // Initial validation call to set button state and hide errors
+        validateForm();
+
+        if (studentForm) {
+          studentForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            // Re-validate on submit to ensure no bypass
+            validateForm();
+            if (startBtn.disabled) {
+              return; // If button is disabled, form is invalid
+            }
+
+            const nombre = document.getElementById("nombre").value.trim();
+            const apellido = document.getElementById("apellido").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const dni = document.getElementById("dni").value.trim();
+
+            studentData = { nombre, apellido, email, dni };
+            buildQuiz();
+            showScreen("screen-quiz");
+          });
+        }
       });
 
       function showScreen(id) {
-        document
-          .querySelectorAll(".screen")
-          .forEach((s) => s.classList.remove("active"));
-        document.getElementById(id).classList.add("active");
+        document.querySelectorAll(".screen").forEach((s) => {
+          s.classList.remove("active");
+          s.style.display = "none"; // Forzar ocultación
+        });
+        const target = document.getElementById(id);
+        if (target) {
+          target.classList.add("active");
+          target.style.display = target.id === "results-area" ? "block" : "";
+        }
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
-
-      // VALIDACIÓN DE FORMULARIO EN TIEMPO REAL
-      const studentForm = document.getElementById("studentForm");
-      const startBtn = document.getElementById("startQuizBtn");
-      const inputs = ["nombre", "apellido", "dni"];
-
-      const validateForm = () => {
-        const isValid = inputs.every(
-          (id) => document.getElementById(id).value.trim() !== "",
-        );
-        startBtn.disabled = !isValid;
-      };
-
-      inputs.forEach((id) => {
-        document.getElementById(id).addEventListener("input", validateForm);
-      });
-
-      studentForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const nombre = document.getElementById("nombre").value.trim();
-        const apellido = document.getElementById("apellido").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const dni = document.getElementById("dni").value.trim();
-
-        // VALIDACIÓN ESTRICTA (Email ya no es obligatorio, pero si se pone, se valida formato)
-        if (!nombre || !apellido || !dni) {
-          alert(
-            "El Nombre, Apellido y DNI son campos obligatorios para registrar tu evaluación.",
-          );
-          return;
-        }
-
-        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          alert("Por favor ingresa un formato de email válido.");
-          return;
-        }
-
-        if (dni.length < 7) {
-          alert("Por favor ingresa un DNI válido (mínimo 7 números).");
-          return;
-        }
-
-        studentData = { nombre, apellido, email, dni };
-        buildQuiz();
-        showScreen("screen-quiz");
-      });
 
       function buildQuiz() {
         const container = document.getElementById("quiz");
@@ -517,29 +611,29 @@
           const qDiv = document.createElement("div");
           qDiv.className = "card";
           qDiv.innerHTML = `
-      <div class="q-head">
-        <div class="q-num">${idx + 1}</div>
-        <div class="q-text">${item.q}</div>
-      </div>
-        <div id="opts-${idx}">
-          ${item.opts
-            .map((ot, i) => {
-              // Resaltar la letra (a, b, c, d)
-              const parts = ot.split(") ");
-              const labelContent =
-                parts.length > 1
-                  ? `<strong>${parts[0]})</strong> ${parts.slice(1).join(") ")}`
-                  : ot;
-              return `
-              <label class="opt" id="opt-${idx}-${i}">
-                <input type="radio" name="q${idx}" value="${i}">
-                <div class="label">${labelContent}</div>
-              </label>
-            `;
-            })
-            .join("")}
+        <div class="q-head">
+          <div class="q-num">${idx + 1}</div>
+          <div class="q-text">${item.q}</div>
         </div>
-    `;
+          <div id="opts-${idx}">
+            ${item.opts
+              .map((ot, i) => {
+                // Resaltar la letra (a, b, c, d)
+                const parts = ot.split(") ");
+                const labelContent =
+                  parts.length > 1
+                    ? `<strong>${parts[0]})</strong> ${parts.slice(1).join(") ")}`
+                    : ot;
+                return `
+                <label class="opt" id="opt-${idx}-${i}">
+                  <input type="radio" name="q${idx}" value="${i}">
+                  <div class="label">${labelContent}</div>
+                </label>
+              `;
+              })
+              .join("")}
+          </div>
+      `;
           const inputs = qDiv.querySelectorAll("input");
           inputs.forEach((inp) => {
             inp.parentElement.addEventListener("click", (e) => {
@@ -768,7 +862,6 @@
           ...studentData,
           score1: score1,
           score2: score2,
-          total: bank.length,
         };
 
         fetch(APPS_SCRIPT_URL, {
@@ -779,11 +872,94 @@
           .then(() => {
             statusEl.className = "send-status ok";
             statusEl.textContent = "✅ Resultados guardados con éxito.";
+            document.getElementById("adminAccessBtn").style.display = "block";
           })
           .catch(() => {
             statusEl.style.color = "var(--red)";
             statusEl.textContent = "❌ Error al guardar. Avisa a tu docente.";
           });
+      }
+
+      function handleAdminAccess() {
+        // En lugar de un prompt que puede bloquearse, mostramos el recuadro
+        document.getElementById("adminLoginBox").style.display = "block";
+        document.getElementById("adminAccessBtn").style.display = "none";
+        document.getElementById("adminKey").focus();
+      }
+
+      function verifyAdmin() {
+        const pass = document.getElementById("adminKey").value.trim();
+        const fullSheetUrl =
+          "https://docs.google.com/spreadsheets/d/1ZpD-k19UzMdsGwYCqN8CojZ3pemM771kBi0uDMJzp1o/edit";
+
+        if (pass === "24521983") {
+          const box = document.getElementById("adminLoginBox");
+          box.innerHTML = `
+            <p style="color:var(--teal); font-weight:800; margin-bottom:12px;">✅ IDENTIDAD VERIFICADA</p>
+            <p style="font-size: 0.85rem; color: #fff; margin-bottom: 15px;">
+              Haga clic en el botón verde o copie la dirección manual:
+            </p>
+            <a href="${fullSheetUrl}" target="_blank" class="external-link-btn" style="display:inline-block; margin-bottom:15px;">
+              🔗 ABRIR PLANILLA DE GOOGLE
+            </a>
+            
+            <div style="margin-top:10px; padding:12px; background:rgba(0,0,0,0.3); border-radius:10px; border:1px solid rgba(255,255,255,0.1); text-align: left;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size: 0.65rem; color: var(--muted); text-transform:uppercase; letter-spacing:1px;">URL de la Base de Datos</span>
+                <button onclick="copyToClipboard('${fullSheetUrl}')" style="background:var(--teal); color:#000; border:none; padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:800; cursor:pointer;">COPIAR</button>
+              </div>
+              <p id="urlText" style="font-size: 0.75rem; color: #fff; word-break: break-all; opacity:0.9; user-select: all; font-family: monospace; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 4px;">${fullSheetUrl}</p>
+            </div>
+            <p id="copyFeedback" style="font-size:0.7rem; color:var(--teal); margin-top:8px; display:none;">¡Copiado al portapapeles!</p>
+          `;
+        } else {
+          alert("Clave incorrecta. Acceso denegado.");
+          document.getElementById("adminKey").value = "";
+        }
+      }
+
+      function copyToClipboard(text) {
+        // Método moderno
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard
+            .writeText(text)
+            .then(() => {
+              showCopyFeedback();
+            })
+            .catch((err) => {
+              fallbackCopy(text);
+            });
+        } else {
+          // Método antiguo de respaldo (Fallback)
+          fallbackCopy(text);
+        }
+      }
+
+      function fallbackCopy(text) {
+        try {
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          // Aseguramos que no se vea pero que sea funcional
+          textArea.style.position = "fixed";
+          textArea.style.left = "-9999px";
+          textArea.style.top = "0";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          const successful = document.execCommand("copy");
+          document.body.removeChild(textArea);
+          if (successful) showCopyFeedback();
+        } catch (err) {
+          console.error("No se pudo copiar", err);
+        }
+      }
+
+      function showCopyFeedback() {
+        const feedback = document.getElementById("copyFeedback");
+        if (feedback) {
+          feedback.style.display = "block";
+          setTimeout(() => (feedback.style.display = "none"), 2000);
+        }
       }
 
       // Estrellas

@@ -617,6 +617,113 @@ body {
   font-weight: 600;
 }
 
-body.locked .opt {
-  pointer-events: none;
+.admin-access-btn {
+  display: none;
+  margin: 1.5rem auto 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: var(--muted);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.admin-login-box {
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  animation: fadeDown 0.3s ease-out forwards;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  width: 150px;
+  text-align: center;
+  margin-right: 10px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.admin-input:focus {
+  border-color: var(--teal);
+}
+
+.admin-verify-btn {
+  background: var(--teal);
+  color: #000;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.admin-verify-btn:active {
+  transform: scale(0.95);
+}
+
+.admin-access-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: var(--teal);
+  box-shadow: 0 0 15px rgba(45, 212, 191, 0.1);
+}
+
+.error-msg {
+  display: block;
+  color: var(--red);
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 5px;
+  min-height: 1rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.error-msg.visible {
+  opacity: 1;
+}
+
+.input-error {
+  border-color: var(--red) !important;
+  background: rgba(248, 113, 113, 0.05) !important;
+}
+
+.external-link-btn {
+  display: inline-block;
+  background: var(--teal);
+  color: #000;
+  text-decoration: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 800;
+  margin-top: 15px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(45, 212, 191, 0.3);
+}
+
+.external-link-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  color: #000;
 }
