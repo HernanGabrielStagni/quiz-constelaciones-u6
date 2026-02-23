@@ -669,7 +669,8 @@
         const answered = bank.filter((_, i) =>
           document.querySelector(`input[name="q${i}"]:checked`),
         ).length;
-        document.getElementById("scoreBtn").disabled = answered < bank.length;
+        // Ahora permitimos calificar siempre que haya al menos una respuesta
+        document.getElementById("scoreBtn").disabled = answered === 0;
 
         const pendingList = document.getElementById("pendingList");
         pendingList.innerHTML = "";
@@ -690,8 +691,10 @@
 
         let correct = 0;
         bank.forEach((item, i) => {
-          const sel = +document.querySelector(`input[name="q${i}"]:checked`)
-            .value;
+          const selInput = document.querySelector(
+            `input[name="q${i}"]:checked`,
+          );
+          const sel = selInput ? +selInput.value : -1;
           if (sel === item.correct) correct++;
         });
 
@@ -707,14 +710,18 @@
             const selInput = document.querySelector(
               `input[name="q${i}"]:checked`,
             );
-            const selValue = +selInput.value;
-            const optWrapper = selInput.closest(".opt");
 
-            // Limpiar estados anteriores
-            optWrapper.classList.remove("incorrect", "correct");
+            if (selInput) {
+              const selValue = +selInput.value;
+              const optWrapper = selInput.closest(".opt");
+              optWrapper.classList.remove("incorrect", "correct");
 
-            if (selValue !== item.correct) {
-              optWrapper.classList.add("incorrect");
+              if (selValue !== item.correct) {
+                optWrapper.classList.add("incorrect");
+              }
+            } else {
+              // Si no respondió, podemos marcar la pregunta de alguna forma o dejarla
+              // En este caso, simplemente no hacemos nada visual en las opciones
             }
           });
 
@@ -740,22 +747,28 @@
             const selInput = document.querySelector(
               `input[name="q${i}"]:checked`,
             );
-            const selValue = +selInput.value;
-            const optWrapper = selInput.closest(".opt");
 
-            // Limpiar estados anteriores
-            optWrapper.classList.remove("incorrect", "correct");
+            // Marcar siempre la correcta para que aprenda
+            const correctOpt = document.getElementById(
+              `opt-${i}-${item.correct}`,
+            );
+            correctOpt.classList.add("correct");
 
-            if (selValue === item.correct) {
-              optWrapper.classList.add("correct");
+            if (selInput) {
+              const selValue = +selInput.value;
+              const optWrapper = selInput.closest(".opt");
+              optWrapper.classList.remove("incorrect", "correct");
+
+              if (selValue === item.correct) {
+                optWrapper.classList.add("correct");
+              } else {
+                optWrapper.classList.add("incorrect");
+                correctOpt.style.opacity = "0.8";
+              }
             } else {
-              optWrapper.classList.add("incorrect");
-              // Marcar también cuál era la correcta para que el alumno aprenda
-              const correctOpt = document.getElementById(
-                `opt-${i}-${item.correct}`,
-              );
-              correctOpt.classList.add("correct");
-              correctOpt.style.opacity = "0.8"; // Brillo suave para la correcta no elegida
+              // Si no respondió, la correcta se marcó arriba,
+              // pero podemos atenuar un poco para indicar que faltó la selección
+              correctOpt.style.opacity = "0.5";
             }
           });
 
