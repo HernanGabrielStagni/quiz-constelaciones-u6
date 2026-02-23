@@ -164,14 +164,26 @@ body {
 
 .site-header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1rem;
+}
+.logo-container {
+  display: inline-block;
+  padding: 12px;
+  background: #037764; /* Verde agua muy oscuro (paspartú) */
+  border: 8px solid #a02b07c7; /* Marrón tipo marco de cuadro */
+  border-radius: 4px;
+  box-shadow: 
+    0 10px 25px rgba(0,0,0,0.5),
+    inset 0 0 10px rgba(0,0,0,0.3);
+  margin-bottom: 1.5rem;
+  position: relative;
 }
 .site-header img {
-  width: 130px;
+  display: block;
+  width: 140px;
   height: auto;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  margin-bottom: 1rem;
+  border-radius: 2px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 .badge {
   display: inline-block;
@@ -182,7 +194,7 @@ body {
   font-size: 0.8rem;
   font-weight: 800;
   margin-top: 1.2rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.4rem;
   text-transform: uppercase;
   box-shadow: 0 4px 15px rgba(45, 212, 191, 0.2);
 }
@@ -190,20 +202,20 @@ body {
   font-family: "Dancing Script", cursive;
   font-size: 3.2rem; /* Más grande para que destaque la cursiva */
   font-weight: 700;
-  color: #975a04; /* El color café/oro que elegiste */
+  color: #af5206; /* El color café/oro que elegiste */
   margin: 0.5rem 0 0.8rem 0;
   text-transform: none; /* Quitamos las mayúsculas fijas para que luzca la cursiva */
   letter-spacing: 0; /* La cursiva no debe tener espacio entre letras */
   text-shadow:
-    1px 1px 0px #ffffff,
+    1px 1px 0px #168155,
     0px 0px 25px rgba(151, 90, 4, 0.3); /* Resplandor a juego con tu color */
   filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.4));
-  line-height: 1.2;
+  line-height: 0.95;
 }
 .site-header p {
   font-size: 0.95rem;
   color: #76e0c9;
-  margin-top: 0.4rem;
+  margin-top: 0.2rem;
   font-weight: 700;
   letter-spacing: 0.5px;
 }
