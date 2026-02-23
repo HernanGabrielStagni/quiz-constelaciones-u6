@@ -441,20 +441,21 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 30px;
-  padding: 3rem 2rem;
+  padding: 2.2rem 1.5rem;
   text-align: center;
   box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.5);
 }
 
-.results-card h2 {
+#result-title {
   font-family: "Outfit", sans-serif;
-  font-size: 2.2rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   background: linear-gradient(135deg, #fff, var(--muted));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
 }
 
 /* El Círculo Mágico */
@@ -525,72 +526,98 @@ body {
 /* Badge de Rango */
 .rank-badge {
   display: inline-block;
-  padding: 0.6rem 2.2rem;
+  padding: 0.5rem 1.8rem;
   border-radius: 100px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  margin-bottom: 3.5rem;
+  margin-bottom: 2.5rem;
   box-shadow: 0 0 25px rgba(108, 99, 255, 0.3); /* Brillo suave */
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
   transition: all 0.4s ease;
 }
 
-/* Grid de Estadísticas */
+/* Grid de Estadísticas Mejorado */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
+/* Forzar que se mantengan uno al lado del otro incluso en móvil por pedido del usuario */
 @media (max-width: 600px) {
   .stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
 }
 
 .stat-card {
-  background: rgba(15, 23, 42, 0.4);
-  padding: 1.5rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
+  background: rgba(15, 23, 42, 0.5);
+  padding: 1rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+}
+
+.stat-card:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: var(--teal);
+  transform: translateY(-2px);
 }
 
 .stat-grade {
   display: block;
-  font-size: 2.2rem;
-  font-weight: 900;
+  font-size: 1.8rem; /* Algo más pequeño en general */
+  font-weight: 950;
   color: #fff;
-  margin-bottom: -2px;
-}
-
-.stat-val {
-  font-size: 0.85rem;
-  color: var(--muted);
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.stat-pct {
-  font-size: 1rem;
-  font-weight: 800;
-  color: var(--teal);
+  line-height: 1;
   margin-bottom: 0.4rem;
 }
 
-.stat-label {
+.stat-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 0.6rem;
+  width: 100%;
+}
+
+.stat-pct {
   font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--muted);
   font-weight: 700;
+  color: var(--teal);
+}
+
+.stat-divider {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.7rem;
+}
+
+.stat-val {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.stat-label {
+  font-size: 0.95rem; /* Un poco más grande y resaltado */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #fff;
+  font-weight: 800;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 0.6rem;
+  width: 90%;
+  margin: 0 auto;
 }
 
 .final-feedback {
