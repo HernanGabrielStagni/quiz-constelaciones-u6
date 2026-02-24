@@ -115,19 +115,19 @@
         <!-- Removida la barra de progreso superior por pedido del usuario -->
         <div id="quiz"></div>
         <div id="pendingSection" style="display: none">
-          <strong>Preguntas sin responder:</strong>
-          <div id="pendingList"></div>
+          <strong id="pendingTitle">Preguntas sin responder:</strong>
+          <div id="pendingList" style="margin-bottom: 2rem"></div>
+
+          <button
+            class="btn btn-primary"
+            id="scoreBtn"
+            disabled
+            style="width: 100%; padding: 1.2rem"
+          >
+            Calificar primer intento
+          </button>
         </div>
         <div id="message" class="msg"></div>
-
-        <button
-          class="btn btn-primary"
-          id="scoreBtn"
-          disabled
-          style="width: 100%; margin-top: 2rem; padding: 1.2rem"
-        >
-          Calificar primer intento
-        </button>
 
         <!-- RESULTADOS PREMIUM (Estilo Stitch) -->
         <div
@@ -237,19 +237,22 @@
                 class="admin-input"
                 placeholder="Introduce la clave"
               />
+              <p
+                id="admin-error-msg"
+                style="
+                  display: none;
+                  color: #ff5252;
+                  font-size: 0.8rem;
+                  font-weight: 700;
+                  margin-bottom: -5px;
+                  padding: 5px 10px;
+                  background: rgba(255, 82, 82, 0.1);
+                  border-radius: 6px;
+                "
+              ></p>
               <button class="admin-verify-btn" onclick="verifyAdmin()">
                 Verificar
               </button>
-              <p
-                style="
-                  font-size: 0.75rem;
-                  color: var(--muted);
-                  margin-top: 10px;
-                "
-              >
-                Indique la clave de administrador para acceder a la base de
-                datos.
-              </p>
             </div>
           </div>
         </div>
@@ -445,6 +448,7 @@
       let studentData = {};
       let score1 = 0;
       let score2 = 0;
+      let firstAttemptSelections = []; // Guardamos las elecciones originales para comparar
       let attempts = 0;
       let locked = false;
 
@@ -672,24 +676,101 @@
       }
 
       function updateProgress() {
-        const answered = bank.filter((_, i) =>
+        const scoreBtn = document.getElementById("scoreBtn");
+        const pendingSection = document.getElementById("pendingSection");
+        const pendingTitle = document.getElementById("pendingTitle");
+        const pendingList = document.getElementById("pendingList");
+
+        if (!scoreBtn) return;
+
+        const answeredCount = bank.filter((_, i) =>
           document.querySelector(`input[name="q${i}"]:checked`),
         ).length;
-        // Ahora permitimos calificar siempre que haya al menos una respuesta
-        document.getElementById("scoreBtn").disabled = answered === 0;
 
-        const pendingList = document.getElementById("pendingList");
-        pendingList.innerHTML = "";
-        bank.forEach((_, i) => {
-          if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+        scoreBtn.disabled = answeredCount === 0;
+        pendingSection.style.display = "block";
+
+        if (attempts === 0) {
+          // PRIMER INTENTO
+          scoreBtn.textContent = "Calificar primer intento";
+          if (answeredCount === bank.length) {
+            pendingTitle.style.display = "none";
+            pendingList.style.display = "none";
+          } else {
+            pendingTitle.style.display = "block";
+            pendingTitle.textContent = "Preguntas sin responder:";
+            pendingList.style.display = "flex";
+            pendingList.innerHTML = "";
+            bank.forEach((_, i) => {
+              if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+                const dot = document.createElement("div");
+                dot.className = "pending-item";
+                dot.textContent = i + 1;
+                pendingList.appendChild(dot);
+              }
+            });
+          }
+        } else if (!locked) {
+          // SEGUNDO INTENTO (Modo Híbrido Inteligente)
+          pendingSection.classList.add("repeating");
+          scoreBtn.textContent = "Calificar segundo intento";
+          pendingTitle.style.display = "block";
+          pendingTitle.textContent = "Mapa de revisión (Segundo Intento):";
+          pendingTitle.style.color = "var(--teal)";
+          pendingList.style.display = "flex";
+          pendingList.innerHTML = "";
+
+          bank.forEach((item, i) => {
+            const selInput = document.querySelector(
+              `input[name="q${i}"]:checked`,
+            );
+            const currentVal = selInput ? +selInput.value : -1;
+            const originalVal =
+              firstAttemptSelections[i] !== undefined
+                ? firstAttemptSelections[i]
+                : -1;
+
             const dot = document.createElement("div");
             dot.className = "pending-item";
             dot.textContent = i + 1;
+
+            // Lógica de colores híbrida solicitada:
+            if (currentVal !== originalVal) {
+              // Si el usuario cambió la respuesta o respondió una que estaba vacía -> AMARILLO (Editada)
+              dot.classList.add("answered");
+            } else {
+              // Si la respuesta es la misma que en el 1er intento, mostramos el resultado corregido original:
+              if (originalVal === -1) {
+                dot.classList.add("unanswered"); // No contestada (Pálido)
+              } else if (originalVal === item.correct) {
+                dot.classList.add("correct"); // Ya estaba bien (Verde)
+              } else {
+                dot.classList.add("incorrect"); // Ya estaba mal (Rojo)
+              }
+            }
             pendingList.appendChild(dot);
-          }
-        });
-        document.getElementById("pendingSection").style.display =
-          answered === bank.length ? "none" : "block";
+          });
+        } else {
+          // EVALUACIÓN FINALIZADA (Locked - Revelamos todo)
+          pendingTitle.textContent = "Resultado Final de la Evaluación:";
+          pendingList.innerHTML = "";
+          bank.forEach((item, i) => {
+            const selInput = document.querySelector(
+              `input[name="q${i}"]:checked`,
+            );
+            const dot = document.createElement("div");
+            dot.className = "pending-item";
+            dot.textContent = i + 1;
+
+            if (selInput && +selInput.value === item.correct) {
+              dot.classList.add("correct"); // Verde
+            } else {
+              dot.classList.add("incorrect"); // Rojo
+            }
+            pendingList.appendChild(dot);
+          });
+          scoreBtn.style.display = "none";
+        }
       }
 
       document.getElementById("scoreBtn").addEventListener("click", () => {
@@ -740,9 +821,16 @@
           // Activar estilo de "repetición/corrección"
           document.getElementById("quiz").classList.add("repeating");
 
+          // Guardar las selecciones del primer intento para el mapa híbrido
+          firstAttemptSelections = bank.map((_, i) => {
+            const sel = document.querySelector(`input[name="q${i}"]:checked`);
+            return sel ? +sel.value : -1;
+          });
+
           // Desplazar suavemente hasta los resultados
           resultsArea.scrollIntoView({ behavior: "smooth" });
           attempts = 1;
+          updateProgress(); // Refrescar el mapa con el modo híbrido
         } else {
           score2 = correct;
           locked = true;
@@ -811,6 +899,7 @@
 
           resultsArea.scrollIntoView({ behavior: "smooth" });
           sendData(pctFinal, avgGrade);
+          updateProgress(); // Mostrar el mapa final verde/rojo
         }
       });
 
@@ -907,11 +996,14 @@
       }
 
       function verifyAdmin() {
-        const pass = document.getElementById("adminKey").value.trim();
+        const passInput = document.getElementById("adminKey");
+        const pass = passInput.value.trim();
+        const errorMsg = document.getElementById("admin-error-msg");
         const fullSheetUrl =
           "https://docs.google.com/spreadsheets/d/1ZpD-k19UzMdsGwYCqN8CojZ3pemM771kBi0uDMJzp1o/edit";
 
         if (pass === "24521983") {
+          errorMsg.style.display = "none";
           const box = document.getElementById("adminLoginBox");
           box.innerHTML = `
             <p style="color:var(--teal); font-weight:800; margin-bottom:12px;">✅ IDENTIDAD VERIFICADA</p>
@@ -920,7 +1012,7 @@
             </p>
             <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
               <a href="${fullSheetUrl}" target="_blank" class="external-link-btn" style="width: 100%;">
-                🔗 ABRIR REGISTRO DE NOTAS
+                🔗 REGISTRO DE NOTAS
               </a>
               <button onclick="copyToClipboard('${fullSheetUrl}')" 
                       style="background: transparent; color: var(--teal); border: 1px solid var(--teal); padding: 5px 15px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; cursor: pointer; text-transform: uppercase;">
@@ -930,8 +1022,16 @@
             <p id="copyFeedback" style="font-size:0.7rem; color:var(--teal); margin-top:12px; display:none;">¡Enlace copiado con éxito!</p>
           `;
         } else {
-          alert("Clave incorrecta. Acceso denegado.");
-          document.getElementById("adminKey").value = "";
+          errorMsg.textContent = "❌ Clave incorrecta. Inténtalo de nuevo.";
+          errorMsg.style.display = "block";
+          passInput.value = "";
+          passInput.focus();
+
+          // Efecto de vibración opcional si quieres
+          const box = document.getElementById("adminLoginBox");
+          box.style.animation = "none";
+          box.offsetHeight; // trigger reflow
+          box.style.animation = "shake 0.4s ease-in-out";
         }
       }
 
