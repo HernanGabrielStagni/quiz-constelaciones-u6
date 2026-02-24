@@ -309,17 +309,35 @@
       // Ocultar/Mostrar botón "Arriba" basado en el scroll
       window.onscroll = function () {
         const topBtn = document.getElementById("nav-to-top");
-        if (
-          document.body.scrollTop > 300 ||
-          document.documentElement.scrollTop > 300
-        ) {
+        const bottomBtn = document.getElementById("nav-to-bottom");
+        const scrollY = window.scrollY || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const bodyHeight = document.documentElement.scrollHeight;
+
+        // Lógica para el botón "Ir al principio" (Arriba)
+        if (scrollY > 300) {
           topBtn.style.opacity = "1";
           topBtn.style.pointerEvents = "auto";
+          topBtn.style.transform = "translateY(0)";
         } else {
           topBtn.style.opacity = "0";
           topBtn.style.pointerEvents = "none";
+          topBtn.style.transform = "translateY(20px)";
+        }
+
+        // Lógica para el botón "Ir al final" (Abajo)
+        // Se oculta si estamos a menos de 100px del final
+        if (scrollY + windowHeight < bodyHeight - 100) {
+          bottomBtn.style.opacity = "1";
+          bottomBtn.style.pointerEvents = "auto";
+          bottomBtn.style.transform = "translateY(0)";
+        } else {
+          bottomBtn.style.opacity = "0";
+          bottomBtn.style.pointerEvents = "none";
+          bottomBtn.style.transform = "translateY(-20px)";
         }
       };
+      window.dispatchEvent(new Event("scroll"));
 
       /**
        * CONFIGURACIÓN DEL QUIZ
