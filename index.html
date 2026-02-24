@@ -36,8 +36,16 @@
     <!-- Fondo de estrellas -->
     <div id="stars-bg"></div>
 
+    <!-- Barra de marca persistente (se activa al hacer scroll) -->
+    <div id="sticky-brand-bar" class="sticky-brand-bar">
+      <div class="mini-logo-frame">
+        <img src="img/Logo espacio semillas.jpg" alt="Logo mini" />
+      </div>
+      <span class="brand-name">Espacio Semillas</span>
+    </div>
+
     <div id="app">
-      <div class="logo-container">
+      <div class="logo-container" id="main-logo-container">
         <img src="img/Logo espacio semillas.jpg" alt="Espacio Semillas" />
       </div>
       <header class="site-header">
@@ -310,9 +318,17 @@
       window.onscroll = function () {
         const topBtn = document.getElementById("nav-to-top");
         const bottomBtn = document.getElementById("nav-to-bottom");
+        const brandBar = document.getElementById("sticky-brand-bar");
         const scrollY = window.scrollY || document.documentElement.scrollTop;
         const windowHeight = window.innerHeight;
         const bodyHeight = document.documentElement.scrollHeight;
+
+        // Barra de Marca Persistente
+        if (scrollY > 150) {
+          brandBar.classList.add("visible");
+        } else {
+          brandBar.classList.remove("visible");
+        }
 
         // Lógica para el botón "Ir al principio" (Arriba)
         if (scrollY > 300) {
@@ -326,7 +342,6 @@
         }
 
         // Lógica para el botón "Ir al final" (Abajo)
-        // Se oculta si estamos a menos de 100px del final
         if (scrollY + windowHeight < bodyHeight - 100) {
           bottomBtn.style.opacity = "1";
           bottomBtn.style.pointerEvents = "auto";
