@@ -259,7 +259,68 @@
       </div>
     </div>
 
+    <!-- Botones de Navegación Flotantes -->
+    <div class="nav-floats">
+      <button
+        id="nav-to-bottom"
+        class="float-btn down"
+        title="Ir al final"
+        onclick="
+          window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth',
+          })
+        "
+      >
+        <span class="btn-text">¿Ir al final?</span>
+        <svg
+          class="btn-icon-svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
+        </svg>
+      </button>
+      <button
+        id="nav-to-top"
+        class="float-btn up"
+        title="Ir al principio"
+        onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+      >
+        <svg
+          class="btn-icon-svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M17 11l-5-5-5 5M17 18l-5-5-5 5" />
+        </svg>
+      </button>
+    </div>
+
     <script>
+      // Ocultar/Mostrar botón "Arriba" basado en el scroll
+      window.onscroll = function () {
+        const topBtn = document.getElementById("nav-to-top");
+        if (
+          document.body.scrollTop > 300 ||
+          document.documentElement.scrollTop > 300
+        ) {
+          topBtn.style.opacity = "1";
+          topBtn.style.pointerEvents = "auto";
+        } else {
+          topBtn.style.opacity = "0";
+          topBtn.style.pointerEvents = "none";
+        }
+      };
+
       /**
        * CONFIGURACIÓN DEL QUIZ
        * Solo necesitas cambiar estos datos para actualizar la evaluación completa.
