@@ -226,7 +226,7 @@
               class="admin-access-btn"
               onclick="handleAdminAccess()"
             >
-              Acceso a Base de Datos
+              REGISTRO DE NOTAS
             </button>
 
             <!-- Recuadro para introducir la clave -->
@@ -915,21 +915,19 @@
           const box = document.getElementById("adminLoginBox");
           box.innerHTML = `
             <p style="color:var(--teal); font-weight:800; margin-bottom:12px;">✅ IDENTIDAD VERIFICADA</p>
-            <p style="font-size: 0.85rem; color: #fff; margin-bottom: 15px;">
-              Haga clic en el botón verde o copie la dirección manual:
+            <p style="font-size: 0.85rem; color: #fff; margin-bottom: 20px;">
+              Acceso concedido al Registro de Notas:
             </p>
-            <a href="${fullSheetUrl}" target="_blank" class="external-link-btn" style="display:inline-block; margin-bottom:15px;">
-              🔗 ABRIR PLANILLA DE GOOGLE
-            </a>
-            
-            <div style="margin-top:10px; padding:12px; background:rgba(0,0,0,0.3); border-radius:10px; border:1px solid rgba(255,255,255,0.1); text-align: left;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-size: 0.65rem; color: var(--muted); text-transform:uppercase; letter-spacing:1px;">URL de la Base de Datos</span>
-                <button onclick="copyToClipboard('${fullSheetUrl}')" style="background:var(--teal); color:#000; border:none; padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:800; cursor:pointer;">COPIAR</button>
-              </div>
-              <p id="urlText" style="font-size: 0.75rem; color: #fff; word-break: break-all; opacity:0.9; user-select: all; font-family: monospace; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 4px;">${fullSheetUrl}</p>
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+              <a href="${fullSheetUrl}" target="_blank" class="external-link-btn" style="width: 100%;">
+                🔗 ABRIR REGISTRO DE NOTAS
+              </a>
+              <button onclick="copyToClipboard('${fullSheetUrl}')" 
+                      style="background: transparent; color: var(--teal); border: 1px solid var(--teal); padding: 5px 15px; border-radius: 6px; font-size: 0.65rem; font-weight: 700; cursor: pointer; text-transform: uppercase;">
+                Copiar enlace al portapapeles
+              </button>
             </div>
-            <p id="copyFeedback" style="font-size:0.7rem; color:var(--teal); margin-top:8px; display:none;">¡Copiado al portapapeles!</p>
+            <p id="copyFeedback" style="font-size:0.7rem; color:var(--teal); margin-top:12px; display:none;">¡Enlace copiado con éxito!</p>
           `;
         } else {
           alert("Clave incorrecta. Acceso denegado.");
